@@ -1,4 +1,10 @@
 module.exports = {
+  /** get date
+   * @summary get date(YYYYMMDD) as full string(8)
+   * @author rikroy
+   * @since 2022.01.03
+   * @returns YYYYMMDD
+   */
   getNowDateString() {
     let now = new Date();
     let dateString =
@@ -10,6 +16,12 @@ module.exports = {
     return dateString;
   },
 
+  /** get datetime
+   * @summary get datetime(YYYYMMDDHHMMSS) as full string(14)
+   * @author rikroy
+   * @since 2022.01.03
+   * @returns YYYYMMDDHHMMSS
+   */
   getNowDateTimeString() {
     let now = new Date();
     let dateString =
@@ -25,3 +37,4 @@ module.exports = {
     return dateString;
   },
 }
+
