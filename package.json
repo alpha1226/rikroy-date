@@ -1,6 +1,6 @@
 {
   "name": "@recross/date",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "date formatter project",
   "main": "main.js",
   "scripts": {

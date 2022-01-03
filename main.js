@@ -1,5 +1,6 @@
 module.exports = {
-  /** get date
+  /** 
+   * get date
    * @summary get date(YYYYMMDD) as full string(8)
    * @author rikroy
    * @since 2022.01.03
@@ -16,7 +17,8 @@ module.exports = {
     return dateString;
   },
 
-  /** get datetime
+  /** 
+   * get datetime
    * @summary get datetime(YYYYMMDDHHMMSS) as full string(14)
    * @author rikroy
    * @since 2022.01.03
@@ -36,5 +38,53 @@ module.exports = {
 
     return dateString;
   },
+
+  /**
+   * get Date(YYYYMMDD) from input object
+   * @author rikroy
+   * @since 2022.01.03
+   * @param {Date} date
+   * @returns YYYYMMDD
+   * @throws unvalid date object
+   */
+  getDateString(date) {
+    if(date instanceof Date){
+      let dateString =
+      date.getFullYear() +
+      '' +
+      (date.getMonth() >= 9 ? date.getMonth() + 1 : '0' + date.getMonth() + 1) +
+      '' +
+      (date.getDate() >= 10 ? date.getDate() : '0' + date.getDate());
+      return dateString;
+    } else {
+      throw 'unvalid date object'
+    }
+  },
+
+  /**
+   * get DateTime(YYYYMMDDHHMMSS) from input object
+   * @author rikroy
+   * @since 2022.01.03
+   * @param {Date} date 
+   * @returns YYYYMMDD
+   * @throws unvalid date object
+   */
+  getDateTimeString(date) {
+    if(date instanceof Date){
+      let dateString =
+        date.getFullYear() + '' +
+        (date.getMonth() >= 9 ? date.getMonth() + 1 : '0' + date.getMonth() + 1) + '' +
+        (date.getDate() >= 10 ? date.getDate() : '0' + date.getDate()) +
+        (date.getHours() >= 10 ? date.getHours() : '0' + date.getHours()) +
+        (date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes()) +
+        (date.getSeconds() >= 10 ? date.getSeconds() : '0' + date.getSeconds());
+
+      return dateString;
+    } else {
+      throw 'unvalid date object'
+    }
+  }
 }
+
+
 
