@@ -1,6 +1,40 @@
+const timezone = require('./tz.json')
+const format = {
+  year: {
+    fullYear: 'yyyy',
+    halfYear: 'yy'
+  },
+  month: {
+    fullMonth: 'MM',
+    halfMonth: 'M'
+  },
+  date: {
+    fullDate: 'dd',
+    halfDate: 'd'
+  },
+  meridiem: {
+    fullMeridiem: 'a'
+  },
+  hours: {
+    full24Hours: 'HH',
+    half24Hours: 'H',
+    full12Hours: 'hh',
+    half12Hours: 'h'
+  },
+  minutes: {
+    fullMinutes: 'mm',
+    halfMinutes: 'm'
+  },
+  second: {
+    fullSecond: 'ss',
+    halfSecond: 's'
+  },
+  milliSecond: 'S',
+  offsetFromUTC: 'Z'
+}
+
 class rikroyDate {
-  date;
-  locale = 'UTC';
+  timezoneOffset = require('./tz.json')
 
   /*
   format {
@@ -24,19 +58,70 @@ class rikroyDate {
   }
   */
 
-  constructor(date, format, locale) {
-    console.log(date, format, locale)
-
-    if(typeof date === typeof new Date()) {
+  constructor(date) {
+    if(typeof date === typeof new Date() || !date) {
       this.date = date
     } else {
-      console.log('get date as string')
-      console.log(format, locale)
-      console.log(format.indexOf('yyyy'))
+      throw 'invalid of date';
     }
   }
 
+
+  initDate(year, month, date, hours, minutes, second, milliSecond, timezone) {
+    this.date = new Date(year, month, date, hours, minutes, second, milliSecond)
+  }
   
+  setTimezone(tmz) {
+    console.log(timezone)
+  }
+
+  format(formatStr){
+    console.log(this.date, formatStr)
+    formatStr = setYear(this.date, formatStr)
+    formatStr = setMonth(this.date, formatStr)
+    formatStr = setDate(this.date, formatStr)
+    console.log(formatStr)
+  }
+
+  formatTimezone(formatStr, timezone) {
+    console.log(this.date, formatStr, timezone)
+  }
+}
+
+function setYear(date, formatStr) {
+  if(formatStr.indexOf('yyyy') >= 0) {
+    formatStr = formatStr.replace('yyyy', date.getFullYear());
+  } else if(formatStr.indexOf('yy') >= 0) {
+    formatStr = formatStr.replace('yy', date.getFullYear().toString().substring(2,4))
+  }
+  return formatStr
+}
+
+function setMonth(date, formatStr) {
+  let month = date.getMonth() + 1
+  if(formatStr.indexOf('MM') >= 0) {
+    formatStr = formatStr.replace('MM', (month >= 10 ? month : '0' + month))
+  } else if (formatStr.indexOf('M') >= 0) {
+    formatStr = formatStr.replace('M', month)
+  }
+  return formatStr;
+}
+
+function setDate(date, formatStr) {
+  let _date = date.getDate()
+  if(formatStr.indexOf('dd') >= 0) {
+    formatStr = formatStr.replace('dd', (_date >= 10 ? _date : '0' + _date))
+  } else if (formatStr.indexOf('d') >= 0) {
+    formatStr = formatStr.replace('d', _date)
+  }
+  return formatStr;
+}
+
+module.exports = {
+  rikroyDate,
+
+
+//--------  OLD -----------
 
   /** 
    * get date
@@ -44,6 +129,8 @@ class rikroyDate {
    * @author rikroy
    * @since 2022.01.03
    * @returns {string(8)} YYYYMMDD
+   * 
+   * @summary 
    */
    getNowDateString() {
     let now = new Date();
@@ -54,7 +141,7 @@ class rikroyDate {
       '' +
       (now.getDate() >= 10 ? now.getDate() : '0' + now.getDate());
     return dateString;
-  }
+  },
 
   /** 
    * get datetime
@@ -76,7 +163,7 @@ class rikroyDate {
       (now.getSeconds() >= 10 ? now.getSeconds() : '0' + now.getSeconds());
 
     return dateString;
-  }
+  },
 
   /**
    * get Date(YYYYMMDD) from input object
@@ -98,7 +185,7 @@ class rikroyDate {
     } else {
       throw 'unvalid date object'
     }
-  }
+  },
 
   /**
    * get DateTime(YYYYMMDDHHMMSS) from input object
@@ -124,5 +211,3 @@ class rikroyDate {
     }
   }
 }
-
-module.exports = rikroyDate
