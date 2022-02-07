@@ -19,6 +19,7 @@ const format = {
   offsetFromUTC: 'Z'
 }
 
+
 class rikroyDate {
   timezone = require('./tz.json')
 
@@ -208,10 +209,10 @@ function setMeridiem(date, formatStr, meridiemFormat) {
 function setDay(date, formatStr, longDay, shortDay) {
   let _day = date.getUTCDay()
 
-  if(formatStr.indexOf('ddd') >= 0) {
+  if(formatStr.indexOf('dddd') >= 0) {
+    formatStr = formatStr.replace('dddd', longDay[_day])
+  } else if (formatStr.indexOf('ddd') >= 0) {
     formatStr = formatStr.replace('ddd', shortDay[_day])
-  } else if (formatStr.indexOf('DDD') >= 0) {
-    formatStr = formatStr.replace('DDD', longDay[_day])
   }
 
   return formatStr
