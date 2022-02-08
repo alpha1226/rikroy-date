@@ -62,7 +62,9 @@ class rikroyDate {
   }
 
   initDate(year, month, date, hours, minutes, second, milliSecond, timezone) {
-    this.date = new Date(year, month, date, hours, minutes, second, milliSecond)
+    this.date = new Date(year, month-1, date, hours, minutes, second, milliSecond)
+    
+    timezone ? this.setTimezone(timezone) : ''
   }
   
   
@@ -108,6 +110,7 @@ class rikroyDate {
       normal[i] = setMinute(_date, normal[i])
       normal[i] = setSecond(_date, normal[i])
       normal[i] = setMeridiem(_date, normal[i], this.meridiemFormat)
+      normal[i] = setMilliSecond(_date, normal[i])
     }
 
     formatStr = ''
@@ -215,6 +218,23 @@ function setDay(date, formatStr, longDay, shortDay) {
     formatStr = formatStr.replace('ddd', shortDay[_day])
   }
 
+  return formatStr
+}
+
+function setMilliSecond(date, formatStr){
+  let _millisecond= date.getUTCMilliseconds().toString().split('')
+
+  if(formatStr.indexOf('S') >= 0) {
+    let index = 0;
+    let sIndex = formatStr.indexOf('S')
+    while(true) {
+      if(index > 3 || formatStr[sIndex + index] !== 'S') break
+
+      formatStr = formatStr.substring(0, sIndex+index).concat(_millisecond[index] ? _millisecond[index] : '0', formatStr.substring(sIndex+index+1, formatStr.length))
+      
+      index++
+    }
+  }
   return formatStr
 }
 

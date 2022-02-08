@@ -22,3 +22,12 @@ console.log(a.format('[cccc] yy년 [a] M월 d일 [day] a h시 m분 s초 [test]')
 console.log(a.formatTimezone('yyyy년 MM월 dd일', a.timezone.Asia.Seoul))
 
 console.log(a.date.toLocaleString(), a.date.getHours(), a.date.getMinutes())
+
+
+a.setTimezone(a.timezone.America.Chicago)
+
+console.log(a.format('yyyy년 MM월 dd일 a hh시 mm분 ss.SSS초'))
+
+b.setTimezone(b.timezone.Asia.Seoul)
+
+console.log(b.format('yyyy MM dd a hh mm ss SSS'))
