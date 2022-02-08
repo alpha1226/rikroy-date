@@ -4,7 +4,7 @@ on  2022.02.07
 
 
 
-###### example
+##### example
 
 const {rikroyDate} = require('@recross/date');
 
@@ -15,7 +15,7 @@ dateLib.format('yyyyMMddhhmmss');
 
 
 
-###### how to use escape
+##### how to use escape
 
 'yyyy [escape] MM' => '2022 escape 02'
 

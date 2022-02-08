@@ -1,89 +1,94 @@
-const timezone = require('./tzFullString.json')
-const format = {
-  fullYear: 'yyyy',
-  halfYear: 'yy',
-  fullMonth: 'MM',
-  halfMonth: 'M',
-  fullDate: 'dd',
-  halfDate: 'd',
-  fullMeridiem: 'a',
-  full24Hours: 'HH',
-  half24Hours: 'H',
-  full12Hours: 'hh',
-  half12Hours: 'h',
-  fullMinutes: 'mm',
-  halfMinutes: 'm',
-  fullSecond: 'ss',
-  halfSecond: 's',
-  milliSecond: 'S',
-  offsetFromUTC: 'Z'
-}
+// all of timezone data
+const TIMEZONE_DATA = require('./tzFullString.json')
 
+/*
+  yyyy: '2022',
+  yy: '22', // last 2 char
+  MM: '02', or '10'
+  M: '2', or '10'
+  dd: '03' , or '13'
+  d: '3', or '13'    
+  ddd: 'Mon', 'Tue'...
+  dddd: 'Monday', 'Tuesday'...
+  a: 'am' or 'pm'  (not use on 'HH' or 'H')
+  HH: '00' or '15' (0 ~ 23) - hours
+  H: '4' or '16'   (0 ~ 23) - hours
+  hh: '06' or '11' (0 ~ 11) - hours
+  h: '5' or '11'   (0 ~ 11) - hours
+  mm: '07' or '30' (0 ~ 59) - minutes
+  m: '7' or '59'   (0 ~ 59) - minutes
+  ss: '01' or '30' (0 ~ 59) - second
+  s: '1' or '30'   (0 ~ 59) - second
+  Z: '+12:00'      (offset form UTC)
+*/
+
+// reference date in this lib
+let _reference_date
+
+// timezone offset in this lib, default: country's timezone
+let _timezoneOffset = (new Date().getTimezoneOffset()) * 60 * 1000 * -1
 
 class rikroyDate {
-  timezone = require('./tz.json')
-
-  _timezoneOffset = (new Date().getTimezoneOffset()) * 60 * 1000 * -1
-
-  meridiemFormat = ['am', 'pm']
-  dayWeekShortFormat = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', ]
-  dayWeekLongFormat = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Staurday']
-
-
-  /*
-  format {
-    yyyy: '2022',
-    yy: '22', // last 2 char
-    MM: '02', or '10'
-    M: '2', or '10'
-    dd: '03' , or '13'
-    d: '3', or '13'    
-    ddd: 'Mon', 'Tue'...
-    dddd: 'Monday', 'Tuesday'...
-    a: 'am' or 'pm'  (not use on 'HH' or 'H')
-    HH: '00' or '15' (0 ~ 23) - hours
-    H: '4' or '16'   (0 ~ 23) - hours
-    hh: '06' or '11' (0 ~ 11) - hours
-    h: '5' or '11'   (0 ~ 11) - hours
-    mm: '07' or '30' (0 ~ 59) - minutes
-    m: '7' or '59'   (0 ~ 59) - minutes
-    ss: '01' or '30' (0 ~ 59) - second
-    s: '1' or '30'   (0 ~ 59) - second
-    Z: '+12:00'      (offset form UTC)
+  // data
+  data = {
+    timezone: require('./tz.json')
   }
-  */
+  // timezone string
+  timezone
 
+  // meridiem format
+  meridiemFormat = ['am', 'pm']
+
+  // day of week short format
+  dayOfWeekShortFormat = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', ]
+  // day of week long format
+  dayOfWeekLongFormat = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Staurday']
+
+  /**
+   * @constructor
+   * @param {Date||number} date reference date or time
+   */
   constructor(date) {
-    if(typeof date === typeof new Date() || !date) {
-      this.date = date
+    if(!date) {
+      _reference_date = new Date() 
+    } else if(typeof date === typeof new Date()) {
+      _reference_date = date
+    } else if (Math.floor(date)) {
+      _reference_date = new Date(Math.floor(date))
     } else {
       throw 'invalid of date';
     }
   }
 
-  initDate(year, month, date, hours, minutes, second, milliSecond, timezone) {
-    this.date = new Date(year, month-1, date, hours, minutes, second, milliSecond)
-    
-    timezone ? this.setTimezone(timezone) : ''
-  }
-  
-  
-
+  /**
+   * set timezone
+   * @param {string} tmz  timezone as string(ex: Asia/Seoul) or use rikroyDate.data.timezone
+   */
   setTimezone(tmz) {
-    for(let tz of timezone) {
+    for(let tz of TIMEZONE_DATA) {
       if(tz.timezone === tmz) {
-        this._timezoneOffset = tz.offset * 60 * 60 * 1000
+        _timezoneOffset = tz.offset * 60 * 60 * 1000
+        this.timezone = tz.timezone
         break
       }
-    }
+   }
   }
 
-  setMeridiemFormat(am, pm) {
-    this.meridiemFormat = [am, pm]
+  /**
+   * get timezone
+   * @returns {object} get timezone object ex: {timezone: Asia/Seoul, offset: 9} or just offset {offset: 9}
+   */
+  getTimezone() {
+    return this.timezone ? {timezone: this.timezone, offset: _timezoneOffset/3600000} : {offset: _timezoneOffset/3600000}
   }
 
+  /**
+   * get date as format
+   * @param {string} formatStr formatted string like 'yyyy년 MM월 dd일', 'yyyy.MM.dd hh:mm:ss' 
+   * @returns string
+   */
   format(formatStr){
-    let _date = new Date(this.date.getTime() + this._timezoneOffset)
+    let _date = new Date(_reference_date.getTime() + _timezoneOffset)
     
     let normal = [formatStr]
     let escape = []
@@ -102,15 +107,15 @@ class rikroyDate {
     }
     
     for(let i=0; i<normal.length;i++) {
-      normal[i] = setYear(_date, normal[i])
-      normal[i] = setMonth(_date, normal[i])
-      normal[i] = setDay(_date, normal[i], this.dayWeekLongFormat, this.dayWeekShortFormat)
-      normal[i] = setDate(_date, normal[i])
-      normal[i] = setHours(_date, normal[i])
-      normal[i] = setMinute(_date, normal[i])
-      normal[i] = setSecond(_date, normal[i])
-      normal[i] = setMeridiem(_date, normal[i], this.meridiemFormat)
-      normal[i] = setMilliSecond(_date, normal[i])
+      normal[i] = setYearOnStringFormat(_date, normal[i])
+      normal[i] = setMonthOnStringFormat(_date, normal[i])
+      normal[i] = setDayOnStringFormat(_date, normal[i], this.dayOfWeekLongFormat, this.dayOfWeekShortFormat)
+      normal[i] = setDateOnStringFormat(_date, normal[i])
+      normal[i] = setHoursOnStringFormat(_date, normal[i])
+      normal[i] = setMinuteOnStringFormat(_date, normal[i])
+      normal[i] = setSecondOnStringFormat(_date, normal[i])
+      normal[i] = setMeridiemOnStringFormat(_date, normal[i], this.meridiemFormat)
+      normal[i] = setMilliSecondOnStringFormat(_date, normal[i])
     }
 
     formatStr = ''
@@ -132,11 +137,11 @@ class rikroyDate {
   }
 
   formatTimezone(formatStr, timezone) {
-    console.log(this.date, formatStr, timezone)
+    console.log(_reference_date, formatStr, timezone)
   }
 }
 
-function setYear(date, formatStr) {
+function setYearOnStringFormat(date, formatStr) {
   if(formatStr.indexOf('yyyy') >= 0) {
     formatStr = formatStr.replace('yyyy', date.getUTCFullYear())
   } else if(formatStr.indexOf('yy') >= 0) {
@@ -145,7 +150,7 @@ function setYear(date, formatStr) {
   return formatStr
 }
 
-function setMonth(date, formatStr) {
+function setMonthOnStringFormat(date, formatStr) {
   let month = date.getUTCMonth() + 1
   if(formatStr.indexOf('MM') >= 0) {
     formatStr = formatStr.replace('MM', (month >= 10 ? month : '0' + month))
@@ -155,7 +160,7 @@ function setMonth(date, formatStr) {
   return formatStr;
 }
 
-function setDate(date, formatStr) {
+function setDateOnStringFormat(date, formatStr) {
   let _date = date.getUTCDate()
   if(formatStr.indexOf('dd') >= 0) {
     formatStr = formatStr.replace('dd', (_date >= 10 ? _date : '0' + _date))
@@ -165,7 +170,7 @@ function setDate(date, formatStr) {
   return formatStr;
 }
 
-function setHours(date, formatStr) {
+function setHoursOnStringFormat(date, formatStr) {
   let _hours = date.getUTCHours()
   if(formatStr.indexOf('HH') >= 0) {
     formatStr = formatStr.replace('HH', (_hours >= 10 ? _hours : '0' + _hours))
@@ -179,7 +184,7 @@ function setHours(date, formatStr) {
   return formatStr;
 }
 
-function setMinute(date, formatStr) {
+function setMinuteOnStringFormat(date, formatStr) {
   let _minutes = date.getUTCMinutes();
   if(formatStr.indexOf('mm') >= 0) {
     formatStr = formatStr.replace('mm', (_minutes >= 10 ? _minutes : '0' + _minutes))
@@ -189,7 +194,7 @@ function setMinute(date, formatStr) {
   return formatStr
 }
 
-function setSecond(date, formatStr) {
+function setSecondOnStringFormat(date, formatStr) {
   let _second = date.getUTCSeconds();
 
   if(formatStr.indexOf('ss') >= 0) {
@@ -200,7 +205,7 @@ function setSecond(date, formatStr) {
   return formatStr
 }
 
-function setMeridiem(date, formatStr, meridiemFormat) {
+function setMeridiemOnStringFormat(date, formatStr, meridiemFormat) {
   let _meridiem = date.getUTCHours() < 12
 
   if(formatStr.indexOf('a') >= 0) {
@@ -209,7 +214,7 @@ function setMeridiem(date, formatStr, meridiemFormat) {
   return formatStr
 }
 
-function setDay(date, formatStr, longDay, shortDay) {
+function setDayOnStringFormat(date, formatStr, longDay, shortDay) {
   let _day = date.getUTCDay()
 
   if(formatStr.indexOf('dddd') >= 0) {
@@ -221,7 +226,7 @@ function setDay(date, formatStr, longDay, shortDay) {
   return formatStr
 }
 
-function setMilliSecond(date, formatStr){
+function setMilliSecondOnStringFormat(date, formatStr){
   let _millisecond= date.getUTCMilliseconds().toString().split('')
 
   if(formatStr.indexOf('S') >= 0) {
@@ -231,7 +236,7 @@ function setMilliSecond(date, formatStr){
       if(index > 3 || formatStr[sIndex + index] !== 'S') break
 
       formatStr = formatStr.substring(0, sIndex+index).concat(_millisecond[index] ? _millisecond[index] : '0', formatStr.substring(sIndex+index+1, formatStr.length))
-      
+
       index++
     }
   }
