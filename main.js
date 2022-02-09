@@ -145,8 +145,6 @@ class rikroyDate {
    * @token d: day, h: hours, m: minutes, s: second, S: milliseconds 
    */
   difference(comparisonDate, token) {
-    console.log(_reference_date, comparisonDate, token)
-
     let timeDifference = _reference_date.getTime() - comparisonDate.getTime()
     
     switch(token) {

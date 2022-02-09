@@ -32,5 +32,6 @@ console.log(a.difference(adate, 'm'))
 console.log(new Date())
 for(let i=0; i<10000; i++) {
   a.format('yyyyMMdd')
+  a.getTimezone()
 }
 console.log(new Date())
