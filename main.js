@@ -136,8 +136,27 @@ class rikroyDate {
     return formatStr
   }
 
-  formatTimezone(formatStr, timezone) {
-    console.log(_reference_date, formatStr, timezone)
+
+  /**
+   * 
+   * @param {*} comparisonDate 
+   * @param {*} token
+   * 
+   * @token d: day, h: hours, m: minutes, s: second, S: milliseconds 
+   */
+  difference(comparisonDate, token) {
+    console.log(this.date, comparisonDate, token)
+
+    let timeDifference = this.date.getTime() - comparisonDate.getTime()
+    
+    switch(token) {
+      case 'd': return Math.round(timeDifference / 1000 / 60 / 60 / 24)
+      case 'h': return Math.round(timeDifference / 1000 / 60 / 60)
+      case 'm': return Math.round(timeDifference / 1000 / 60)
+      case 's': return Math.round(timeDifference / 1000)
+      case 'S': return Math.round(timeDifference)
+      default: throw 'invalid token'
+    }
   }
 }
 

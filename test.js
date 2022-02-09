@@ -10,6 +10,8 @@ b.setTimezone('Pacific/Midway')
 b.setTimezone(b.data.timezone.Asia.Seoul)
 b.setTimezone(b.data.timezone.America.Denver)
 
+a.setTimezone(a.timezone.Asia.Seoul)
+
 console.log(lib.getNowDateString());
 
 console.log(a.format('yyyyMMddhhmmss'));
@@ -19,23 +21,10 @@ console.log(a.format('yy년 [a] M월 d일 a [day] a h시 m분 s초 [test]'))
 console.log(a.format('yy년 M월 d일 ddd a h시 m분 s초'))
 console.log(a.format('[cccc] yy년 [a] M월 d일 [day] a h시 m분 s초 [test]'))
 
-console.log(a.formatTimezone('yyyy년 MM월 dd일', a.data.timezone.Asia.Seoul))
+console.log(a.date.toLocaleString(), a.date.getHours(), a.date.getMinutes())
+
+console.log(a.difference(new Date(), 'S'))
 
 
-a.setTimezone(a.data.timezone.America.Chicago)
-
-console.log(a.format('yyyy년 MM월 dd일 a hh시 mm분 ss.SSS초'))
-
-b.setTimezone(b.data.timezone.Asia.Seoul)
-
-console.log(b.format('yyyy MM dd a hh mm ss SSS'))
-
-console.log(a.getTimezone())
-
-console.log(a.meridiemFormat)
-
-const c = new lib.rikroyDate(1645303644417)
-
-console.log(c.format('yyyyMMddhhmmss'))
-
-console.log(c._reference_date)
+let adate = new Date(2022, 1, 9, 17, 0, 5)
+console.log(a.difference(adate, 'm'))
