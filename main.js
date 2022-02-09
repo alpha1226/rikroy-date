@@ -145,9 +145,9 @@ class rikroyDate {
    * @token d: day, h: hours, m: minutes, s: second, S: milliseconds 
    */
   difference(comparisonDate, token) {
-    console.log(this.date, comparisonDate, token)
+    console.log(_reference_date, comparisonDate, token)
 
-    let timeDifference = this.date.getTime() - comparisonDate.getTime()
+    let timeDifference = _reference_date.getTime() - comparisonDate.getTime()
     
     switch(token) {
       case 'd': return Math.round(timeDifference / 1000 / 60 / 60 / 24)
