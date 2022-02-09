@@ -1,8 +1,13 @@
 ## Rikroy Date Lib
 
-on  2022.02.07
+on  2022.02.09
 
+###### example
+const {rikroyDate} = require('@recross/date');
 
+let rd= new rikroyDate(new Date());
+
+rd.format('yyyyMMddhhmmss');
 
 
 
@@ -16,7 +21,9 @@ can use square brackets
 
 ---
 
+###### format token
 
+example : rd.format('yyyyMMdd')
 
 | Token | Discription           | Output |
 | ----- | --------------------- | ------ |
@@ -38,3 +45,18 @@ can use square brackets
 | ss    | second                | 03     |
 | s     | second                | 3      |
 
+
+
+---
+
+###### get time difference
+
+example : rd.difference(new Date(), 'm') <- comparison date object and token
+
+| Token | Discription |
+| ----- | ----------- |
+| d     | day         |
+| h     | hours       |
+| m     | minutes     |
+| s     | second      |
+| S     | millisecond |
