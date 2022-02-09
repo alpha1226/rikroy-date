@@ -13,9 +13,9 @@ rd.format('yyyyMMddhhmmss');
 
 const {rikroyDate} = require('@recross/date');
 
-let dateLib = new rikroyDate(new Date());
+let rd = new rikroyDate(new Date());
 
-dateLib.format('yyyyMMddhhmmss');
+rd.format('yyyyMMddhhmmss');
 
 
 

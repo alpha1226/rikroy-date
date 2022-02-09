@@ -1,3 +1,4 @@
+const { rikroyDate } = require('./main.js');
 const lib = require('./main.js')
 
 const a = new lib.rikroyDate(new Date());
@@ -31,7 +32,8 @@ console.log(a.difference(adate, 'm'))
 
 console.log(new Date())
 for(let i=0; i<10000; i++) {
-  a.format('yyyyMMdd')
-  a.getTimezone()
+  let test = new rikroyDate(new Date());
+  test.format('yyyyMMddhhmmssSSS')
+  test.getTimezone()
 }
 console.log(new Date())
