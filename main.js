@@ -26,7 +26,7 @@ const TIMEZONE_DATA = require('./tzFullString.json')
 let _reference_date
 
 // timezone offset in this lib, default: country's timezone
-let _timezoneOffset = (new Date().getTimezoneOffset()) * 60 * 1000 * -1
+let _timezoneOffset = (new Date().getTimezoneOffset()) * -60000
 
 class rikroyDate {
   // data
@@ -45,7 +45,7 @@ class rikroyDate {
   dayOfWeekLongFormat = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Staurday']
 
   /**
-   * @constructor
+   * @constructorz
    * @param {Date||number} date reference date or time
    */
   constructor(date) {
@@ -56,7 +56,7 @@ class rikroyDate {
     } else if (Math.floor(date)) {
       _reference_date = new Date(Math.floor(date))
     } else {
-      throw 'invalid of date';
+      throw 'invalid of date'
     }
   }
 
@@ -67,7 +67,7 @@ class rikroyDate {
   setTimezone(tmz) {
     for(let tz of TIMEZONE_DATA) {
       if(tz.timezone === tmz) {
-        _timezoneOffset = tz.offset * 60 * 60 * 1000
+        _timezoneOffset = tz.offset * 3600000
         this.timezone = tz.timezone
         break
       }
@@ -93,9 +93,9 @@ class rikroyDate {
     let normal = [formatStr]
     let escape = []
 
-    let i = 0;
+    let i = 0
     while(true){
-      if(normal[i].indexOf('[') === -1) break;
+      if(normal[i].indexOf('[') === -1) break
 
       normal[i+1] = normal[i].substring(normal[i].indexOf(']')+1)
       
@@ -121,7 +121,7 @@ class rikroyDate {
     formatStr = ''
 
     while(true){
-      if(!normal.length && !escape.length) break;
+      if(!normal.length && !escape.length) break
 
       if(normal[0] != null) {
         formatStr += normal[0]
@@ -148,9 +148,9 @@ class rikroyDate {
     let timeDifference = _reference_date.getTime() - comparisonDate.getTime()
     
     switch(token) {
-      case 'd': return Math.round(timeDifference / 1000 / 60 / 60 / 24)
-      case 'h': return Math.round(timeDifference / 1000 / 60 / 60)
-      case 'm': return Math.round(timeDifference / 1000 / 60)
+      case 'd': return Math.round(timeDifference / 86400000)
+      case 'h': return Math.round(timeDifference / 3600000)
+      case 'm': return Math.round(timeDifference / 60000)
       case 's': return Math.round(timeDifference / 1000)
       case 'S': return Math.round(timeDifference)
       default: throw 'invalid token'
@@ -174,7 +174,7 @@ function setMonthOnStringFormat(date, formatStr) {
   } else if (formatStr.indexOf('M') >= 0) {
     formatStr = formatStr.replace('M', month)
   }
-  return formatStr;
+  return formatStr
 }
 
 function setDateOnStringFormat(date, formatStr) {
@@ -184,7 +184,7 @@ function setDateOnStringFormat(date, formatStr) {
   } else if (formatStr.indexOf('d') >= 0) {
     formatStr = formatStr.replace('d', _date)
   }
-  return formatStr;
+  return formatStr
 }
 
 function setHoursOnStringFormat(date, formatStr) {
@@ -194,15 +194,15 @@ function setHoursOnStringFormat(date, formatStr) {
   } else if(formatStr.indexOf('hh') >= 0) {
     formatStr = formatStr.replace('hh', ((_hours % 12) >= 10 ? _hours % 12 : '0' + (_hours % 12)))
   } else if(formatStr.indexOf('H') >= 0) {
-    formatStr = formatStr.replace('H', _hours);
+    formatStr = formatStr.replace('H', _hours)
   } else if(formatStr.indexOf('h') >= 0) {
     formatStr = formatStr.replace('h', _hours % 12)
   }
-  return formatStr;
+  return formatStr
 }
 
 function setMinuteOnStringFormat(date, formatStr) {
-  let _minutes = date.getUTCMinutes();
+  let _minutes = date.getUTCMinutes()
   if(formatStr.indexOf('mm') >= 0) {
     formatStr = formatStr.replace('mm', (_minutes >= 10 ? _minutes : '0' + _minutes))
   } else if(formatStr.indexOf('m') >= 0) {
@@ -212,7 +212,7 @@ function setMinuteOnStringFormat(date, formatStr) {
 }
 
 function setSecondOnStringFormat(date, formatStr) {
-  let _second = date.getUTCSeconds();
+  let _second = date.getUTCSeconds()
 
   if(formatStr.indexOf('ss') >= 0) {
     formatStr = formatStr.replace('ss', (_second >= 10 ? _second : '0'+ _second))
@@ -247,7 +247,7 @@ function setMilliSecondOnStringFormat(date, formatStr){
   let _millisecond= date.getUTCMilliseconds().toString().split('')
 
   if(formatStr.indexOf('S') >= 0) {
-    let index = 0;
+    let index = 0
     let sIndex = formatStr.indexOf('S')
     while(true) {
       if(index > 3 || formatStr[sIndex + index] !== 'S') break
@@ -276,13 +276,13 @@ module.exports = {
    * @summary 
    */
    getNowDateString() {
-    let now = new Date();
+    let now = new Date()
     let dateString =
       now.getFullYear() +
       '' +
       (now.getMonth() >= 9 ? (now.getMonth() + 1) : '0' + (now.getMonth() + 1)) +
       '' +
-      (now.getDate() >= 10 ? now.getDate() : '0' + now.getDate());
+      (now.getDate() >= 10 ? now.getDate() : '0' + now.getDate())
     return dateString
   },
 
@@ -294,7 +294,7 @@ module.exports = {
    * @returns {string(14) YYYYMMDDHHMMSS
    */
   getNowDateTimeString() {
-    let now = new Date();
+    let now = new Date()
     let dateString =
       now.getFullYear() +
       '' +
@@ -303,9 +303,9 @@ module.exports = {
       (now.getDate() >= 10 ? now.getDate() : '0' + now.getDate()) +
       (now.getHours() >= 10 ? now.getHours() : '0' + now.getHours()) +
       (now.getMinutes() >= 10 ? now.getMinutes() : '0' + now.getMinutes()) +
-      (now.getSeconds() >= 10 ? now.getSeconds() : '0' + now.getSeconds());
+      (now.getSeconds() >= 10 ? now.getSeconds() : '0' + now.getSeconds())
 
-    return dateString;
+    return dateString
   },
 
   /**
@@ -323,8 +323,8 @@ module.exports = {
       '' +
       (date.getMonth() >= 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) +
       '' +
-      (date.getDate() >= 10 ? date.getDate() : '0' + date.getDate());
-      return dateString;
+      (date.getDate() >= 10 ? date.getDate() : '0' + date.getDate())
+      return dateString
     } else {
       throw 'unvalid date object'
     }
@@ -346,9 +346,9 @@ module.exports = {
         (date.getDate() >= 10 ? date.getDate() : '0' + date.getDate()) +
         (date.getHours() >= 10 ? date.getHours() : '0' + date.getHours()) +
         (date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes()) +
-        (date.getSeconds() >= 10 ? date.getSeconds() : '0' + date.getSeconds());
+        (date.getSeconds() >= 10 ? date.getSeconds() : '0' + date.getSeconds())
 
-      return dateString;
+      return dateString
     } else {
       throw 'unvalid date object'
     }
