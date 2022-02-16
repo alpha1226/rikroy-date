@@ -2,21 +2,14 @@
 
 on  2022.02.09
 
+
+
 ###### example
 const {rikroyDate} = require('@recross/date');
 
 let rd= new rikroyDate(new Date());
 
 rd.format('yyyyMMddhhmmss');
-
-##### example
-
-const {rikroyDate} = require('@recross/date');
-
-let rd = new rikroyDate(new Date());
-
-rd.format('yyyyMMddhhmmss');
-
 
 
 
@@ -26,7 +19,8 @@ rd.format('yyyyMMddhhmmss');
 
 can use square brackets
 
-
+do not use double escape
+like 'yyyy [es[ca]pe] MM' => has bug, reutrn '2022 es[cape] 02'
 
 ---
 
